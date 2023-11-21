@@ -1,13 +1,11 @@
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
 import './weather_icons/css/weather-icons.min.css';
 import './weather_icons/css/weather-icons-wind.min.css';
 import Grid from '@mui/material/Grid';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, BarOptions, AnimationOptions, BarControllerChartOptions, ScaleChartOptions } from 'chart.js';
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 import moment from 'moment';
 import 'moment/locale/de';
@@ -16,7 +14,7 @@ import {Speed} from '@mui/icons-material';
 import {AlertColor} from '@mui/material/Alert';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
-import { blueGrey, blue, green, red, orange } from '@mui/material/colors';
+import { blueGrey, blue, green, red, orange, grey } from '@mui/material/colors';
 
 ChartJS.defaults.font.size = 24;
 
@@ -122,12 +120,38 @@ const data = {
   ]
 };
 
+const defaultOptions: ScaleChartOptions<"bar"> = {
+  scales: {
+    y: {
+      ticks: {
+        // Include a dollar sign in the ticks
+        callback: function(value, index, ticks) {
+            return value+'°';
+        }
+      },
+      min: 10,
+      max: 20
+    }
+  }
+};
+
+interface FormattedValueProps {
+  value: number|null;
+}
+function FormattedValue(props: FormattedValueProps) {
+  if (props.value) {
+    return <span>{new Intl.NumberFormat("de-DE").format(Math.round(props.value))}</span>;
+  }
+  return <span>-</span>;
+}
+
 export default function SmallWeatherCard() {
   const [hourlyChartData, setHourlyChartData] = useState(data);
   const [currentWeather, setCurrentWeather] = useState(defaultCurrentWeatherData);
   const [weatherAlerts, setWeatherAlerts] = useState([]);
   const [dailyMin, setDailyMin] = useState(0);
   const [dailyMax, setDailyMax] = useState(0);
+  const [options, setOptions] = useState(defaultOptions);
 
   function loadData() {
     fetch('/api/current_weather_timeline')
@@ -185,6 +209,20 @@ useEffect(() => {
   })
   setDailyMin(minTemp);
   setDailyMax(maxTemp);
+  setOptions({
+    scales: {
+      y: {
+        ticks: {
+          // Include a dollar sign in the ticks
+          callback: function(value, index, ticks) {
+              return value+'°';
+          }
+        },
+        min: Math.floor(minTemp-1),
+        max: Math.ceil(maxTemp+1)
+      }
+    }
+  });
 }, [hourlyChartData]);
 
   return (
@@ -196,16 +234,16 @@ useEffect(() => {
               <i className="wi wi-day-cloudy" style={{position: 'relative', top: 0, fontSize: "50pt"}}></i> {Math.round(currentWeather.temperature)}<i className="wi wi-celsius"></i>
             </Typography>
             <Grid container spacing={4}>
-              <Grid item xs={5}>
-                <Typography variant="h6" color="GrayText" align='right' component="div">
-                  <i className="wi wi-direction-up"></i> {Math.round(dailyMax)}<i className="wi wi-celsius"></i><br />
-                  <i className="wi wi-direction-down"></i> {Math.round(dailyMin)}<i className="wi wi-celsius"></i>
+              <Grid item xs={4}>
+                <Typography variant="h6" style={{ color: grey[700] }} align='right' component="div">
+                  <i className="wi wi-direction-up"></i> <FormattedValue value={dailyMax} /><i className="wi wi-celsius"></i><br />
+                  <i className="wi wi-direction-down"></i> <FormattedValue value={dailyMin} /><i className="wi wi-celsius"></i>
                 </Typography>
               </Grid>
-              <Grid item xs={5}>
-                <Typography variant="h6" color="GrayText" align='left' component="div">
-                  <i className="wi wi-wind towards-113-deg"></i> {Math.round(currentWeather.wind_speed_30)} km/h<br />
-                  <Speed sx={{ fontSize: 24 }} /> {new Intl.NumberFormat("de-DE").format(Math.round(currentWeather.pressure_msl))} hPa
+              <Grid item xs={6}>
+                <Typography variant="h6" style={{ color: grey[700] }} align='left' component="div">
+                  <i className={"wi wi-wind from-"+currentWeather.wind_direction_30+"-deg"}></i> <FormattedValue value={currentWeather.wind_speed_30} /> km/h<br />
+                  <Speed sx={{ fontSize: 30 }} /> <FormattedValue value={currentWeather.pressure_msl} /> hPa
                 </Typography>
               </Grid>
             </Grid>
@@ -225,10 +263,10 @@ useEffect(() => {
             </Stack>
           </Grid>
           <Grid item xs={7}>
-            <Typography variant="h5" align='center' color="GrayText" component="div">
+            <Typography variant="h5" align='center' style={{ color: grey[700] }} component="div">
               Tagesverlauf
             </Typography>
-            <Bar height="106" data={hourlyChartData} />
+            <Bar height="106" data={hourlyChartData} options={options} />
           </Grid>
         </Grid>
       

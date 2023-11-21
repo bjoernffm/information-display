@@ -22,7 +22,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
 import 'moment/locale/de';
-import { purple, blue, green, red, orange } from '@mui/material/colors';
+import { purple, blue, green, red, orange, grey } from '@mui/material/colors';
 
 interface Product {
     /*"icon": {
@@ -127,7 +127,7 @@ function processRelativeTime(number: number, withoutSuffix: boolean, key: string
     return withoutSuffix ? format[key][0] : format[key][1];
 }
 
-moment.updateLocale('en', {
+moment.updateLocale('de', {
     relativeTime: {
         future: 'in %s',
         past: 'vor %s',
@@ -183,16 +183,16 @@ export function DepatureTable(props: DepatureTableProps) {
             
             let departureInfo = <span>{departure}</span>;
             if(departure != correctedDeparture) {
-                departureInfo = <span>{correctedDeparture} <Typography component="del" color="GrayText">{departure}</Typography></span>
+                departureInfo = <span>{correctedDeparture} <del style={{ color: grey[700] }}>{departure}</del></span>
             }
 
             let notes = <span></span>;
             let filteredOccup = row.Notes.Note.filter((note) => note.key.startsWith('text.occup.jny.max'));
 
             if(filteredOccup[0].key == NoteKeys.occup_jny_max_11) {
-                notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: green[500]}}/> geringe Belegung</span>
+                notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: green[500]}}/> eher leer</span>
             } else if(filteredOccup[0].key == NoteKeys.occup_jny_max_12) {
-                notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: orange[500]}}/> hohe Belegung</span>
+                notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: orange[500]}}/> eher voll</span>
             }
             
             if(row.cancelled && row.cancelled == true) {

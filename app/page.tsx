@@ -9,6 +9,8 @@ import TimeCard from './time_card';
 import SmallWeatherCard from './small_weather_card';
 import SmallTransportationCard from './small_transportation_card';
 import Grid from '@mui/material/Grid';
+import HomeIcon from '@mui/icons-material/Home';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -28,8 +30,8 @@ function CustomTabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ div: 3 }}>
-          <Typography>{children}</Typography>
+        <Box>
+          {children}
         </Box>
       )}
     </div>
@@ -52,18 +54,28 @@ export default function BasicTabs() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Grid container spacing={2}>
-      
-        <Grid item xs={4}>
-          <TimeCard />
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', width: "50%", marginBottom: 5 }}>
+        <Tabs value={value} onChange={handleChange} variant="fullWidth" aria-label="basic tabs example">
+          <Tab icon={<HomeIcon />} label="HOME" {...a11yProps(0)} />
+          <Tab icon={<FlightTakeoffIcon />} label="Flugwetter" {...a11yProps(1)} />
+        </Tabs>
+      </Box>
+      <CustomTabPanel value={value} index={0}>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <TimeCard />
+          </Grid>
+          <Grid item xs={8}>
+            <SmallWeatherCard />
+          </Grid>
+          <Grid item xs={12}>
+            <SmallTransportationCard />
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-        <SmallWeatherCard />
-        </Grid>
-        <Grid item xs={12}>
-        <SmallTransportationCard />
-        </Grid>
-      </Grid>
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        Item Two
+      </CustomTabPanel>
     </Box>
   );
 }

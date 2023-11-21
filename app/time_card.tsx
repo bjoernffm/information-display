@@ -6,10 +6,11 @@ import SunCalc from 'suncalc';
 import './weather_icons/css/weather-icons.min.css';
 import moment from 'moment';
 import 'moment/locale/de';
-
-moment().locale("de");
+import { grey } from '@mui/material/colors';
 
 export default function TimeCard() {
+  moment.locale("de");
+
   const [momentInstance, setMomentInstance] = useState(moment());
   const [seperatorStyle, setSeperatorStyle] = useState({});
   const [sunlightInfo, setSunlightInfo] = useState(<span></span>);
@@ -44,13 +45,13 @@ export default function TimeCard() {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5" align="center" component="div" color="GrayText">
+        <Typography variant="h5" align="center" component="div" style={{ color: grey[700] }}>
           {momentInstance.format('dddd')}, der {momentInstance.format('D. MMMM')}
         </Typography>
         <Typography variant="h1" align="center" component="div">
           {momentInstance.format('HH')}<span style={seperatorStyle}>:</span>{momentInstance.format('mm')}
         </Typography>
-        <Typography variant="h5" align="center" component="div" color="GrayText">
+        <Typography variant="h5" align="center" component="div" style={{ color: grey[700] }}>
           {sunlightInfo}
         </Typography>
       </CardContent>

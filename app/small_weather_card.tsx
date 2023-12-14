@@ -18,6 +18,21 @@ import { blueGrey, blue, green, red, orange, grey } from '@mui/material/colors';
 
 ChartJS.defaults.font.size = 24;
 
+/* <Stack sx={{ width: '100%', "marginTop": '14px' }} spacing={2}>
+              {weatherAlerts.map((alert: WeatherAlert) => {
+                let severitySetting: AlertColor = "info";
+                if(alert.severity == "severe" || alert.severity == "extreme") {
+                  let severitySetting = "error";
+                } else if(alert.severity == "moderate") {
+                  let severitySetting = "warning";
+                }
+                
+                return <Alert severity={severitySetting} key={alert.alert_id}>
+                  {alert.headline_de}
+                </Alert>
+              })}
+            </Stack>*/
+
 interface HourlyDataRow {
     timestamp: string,
     temperature: number,
@@ -165,7 +180,7 @@ export default function SmallWeatherCard() {
               data: json.map((row: HourlyDataRow) => row.temperature),
               backgroundColor: json.map((row: HourlyDataRow) => {
                 if(moment(row.timestamp).format('H') == moment().format('H')) {
-                  return blueGrey[300];
+                  return blueGrey[500];
                 }
                 return blueGrey[900];
               }),
@@ -190,7 +205,7 @@ useEffect(() => {
 
     const interval = setInterval(() => {
       loadData();
-    }, 60*1000);
+    }, 15*60*1000);
 
     return () => clearInterval(interval);
 }, []);
@@ -235,41 +250,27 @@ useEffect(() => {
             </Typography>
             <Grid container spacing={4}>
               <Grid item xs={4}>
-                <Typography variant="h6" style={{ color: grey[700] }} align='right' component="div">
+                <Typography variant="h6" style={{ color: grey[600] }} align='right' component="div">
                   <i className="wi wi-direction-up"></i> <FormattedValue value={dailyMax} /><i className="wi wi-celsius"></i><br />
                   <i className="wi wi-direction-down"></i> <FormattedValue value={dailyMin} /><i className="wi wi-celsius"></i>
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Typography variant="h6" style={{ color: grey[700] }} align='left' component="div">
+                <Typography variant="h6" style={{ color: grey[600] }} align='left' component="div">
                   <i className={"wi wi-wind from-"+currentWeather.wind_direction_30+"-deg"}></i> <FormattedValue value={currentWeather.wind_speed_30} /> km/h<br />
                   <Speed sx={{ fontSize: 30 }} /> <FormattedValue value={currentWeather.pressure_msl} /> hPa
                 </Typography>
               </Grid>
             </Grid>
-            <Stack sx={{ width: '100%', "marginTop": '14px' }} spacing={2}>
-              {weatherAlerts.map((alert: WeatherAlert) => {
-                let severitySetting: AlertColor = "info";
-                if(alert.severity == "severe" || alert.severity == "extreme") {
-                  let severitySetting = "error";
-                } else if(alert.severity == "moderate") {
-                  let severitySetting = "warning";
-                }
-                
-                return <Alert severity={severitySetting} key={alert.alert_id}>
-                  {alert.headline_de}
-                </Alert>
-              })}
-            </Stack>
           </Grid>
+
           <Grid item xs={7}>
-            <Typography variant="h5" align='center' style={{ color: grey[700] }} component="div">
+            <Typography variant="h5" align='center' style={{ color: grey[600] }} component="div">
               Tagesverlauf
             </Typography>
             <Bar height="106" data={hourlyChartData} options={options} />
           </Grid>
         </Grid>
-      
       </CardContent>
     </Card>
   );

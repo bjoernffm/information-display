@@ -6,11 +6,21 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TimeCard from './time_card';
+import DeviceCard from './device_card';
 import SmallWeatherCard from './small_weather_card';
 import SmallTransportationCard from './small_transportation_card';
 import Grid from '@mui/material/Grid';
 import HomeIcon from '@mui/icons-material/Home';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import PermDeviceInformationIcon from '@mui/icons-material/PermDeviceInformation';
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDisplay, faHome } from '@fortawesome/free-solid-svg-icons'
+//import { faDisplay } from '@fortawesome/free-regular-svg-icons'
+import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons'
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,8 +66,8 @@ export default function BasicTabs() {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', width: "50%", marginBottom: 5 }}>
         <Tabs value={value} onChange={handleChange} variant="fullWidth" aria-label="basic tabs example">
-          <Tab icon={<HomeIcon />} label="HOME" {...a11yProps(0)} />
-          <Tab icon={<FlightTakeoffIcon />} label="Flugwetter" {...a11yProps(1)} />
+          <Tab icon={<FontAwesomeIcon icon={faHome} />} label="HOME" {...a11yProps(0)} />
+          <Tab icon={<FontAwesomeIcon icon={faDisplay} />} label="Device" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -74,7 +84,7 @@ export default function BasicTabs() {
         </Grid>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Item Two
+        <DeviceCard />
       </CustomTabPanel>
     </Box>
   );

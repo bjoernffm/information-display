@@ -45,13 +45,13 @@ export default function TimeCard() {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h5" align="center" component="div" style={{ color: grey[700] }}>
+        <Typography variant="h5" align="center" component="div" style={{ color: grey[600] }}>
           {momentInstance.format('dddd')}, der {momentInstance.format('D. MMMM')}
         </Typography>
         <Typography variant="h1" align="center" component="div">
           {momentInstance.format('HH')}<span style={seperatorStyle}>:</span>{momentInstance.format('mm')}
         </Typography>
-        <Typography variant="h5" align="center" component="div" style={{ color: grey[700] }}>
+        <Typography variant="h5" align="center" component="div" style={{ color: grey[600] }}>
           {sunlightInfo}
         </Typography>
       </CardContent>

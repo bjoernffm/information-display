@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDisplay, faHome } from '@fortawesome/free-solid-svg-icons'
 //import { faDisplay } from '@fortawesome/free-regular-svg-icons'
 import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons'
+import CiteCard from './cite_card';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -80,6 +81,9 @@ export default function BasicTabs() {
           </Grid>
           <Grid item xs={12}>
             <SmallTransportationCard />
+          </Grid>
+          <Grid item xs={12}>
+            <CiteCard />
           </Grid>
         </Grid>
       </CustomTabPanel>

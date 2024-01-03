@@ -98,7 +98,7 @@ export default function DeviceCard() {
                     <Grid item xs={6}>
                         <Typography variant="h4">Network</Typography>
                         {data.addresses.map(address => (
-                            <p>
+                            <p key={address.ip}>
                                 Name: {address.name}<br />
                                 IP: <code>{address.ip}</code>
                             </p>

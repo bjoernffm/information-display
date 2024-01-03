@@ -2,25 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import EastIcon from '@mui/icons-material/East';
-import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
-import SubwayIcon from '@mui/icons-material/Subway';
-import CircleIcon from '@mui/icons-material/Circle';
 import Grid from '@mui/material/Grid';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
 import moment from 'moment';
 import 'moment/locale/de';
-import { purple, blue, green, red, orange, grey } from '@mui/material/colors';
-import Skeleton from '@mui/material/Skeleton';
-import cuid from 'cuid';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDisplay, faQuestion } from '@fortawesome/free-solid-svg-icons'
-//import { faDisplay } from '@fortawesome/free-regular-svg-icons'
+import { faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons'
 
 interface NetworkAddress {

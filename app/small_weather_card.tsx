@@ -165,14 +165,6 @@ interface WeatherIconProps {
   icon: string|null;
 }
 
-
-
-
-
-
-
-
-
 export function WeatherIcon({icon}: WeatherIconProps) {
   let wi_icon = "wi-na";
 

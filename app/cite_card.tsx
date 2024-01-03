@@ -16,7 +16,7 @@ export default function CiteCard() {
         <Card>
             <CardContent>
                 <Typography variant="h6" component="div" style={{marginBottom: 25}}>
-                    Zitat des Tages zum Thema <em>Lernen</em>
+                    Zitat zum Thema <em>Lernen</em>
                 </Typography>
                 <div style={{borderLeft: "10px solid "+grey[800], paddingLeft: "30px", marginLeft: "30px"}}>
                     <Typography variant="h6" component="div">

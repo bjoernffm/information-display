@@ -190,6 +190,8 @@ export function DepartureRow({departure}: DepartureRowProps) {
         notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: green[500]}}/> eher leer</span>
     } else if(departure.occupancy === "rather_full") {
         notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: orange[500]}}/> eher voll</span>
+    } else if(departure.occupancy === "very_full") {
+        notes = <span><CircleIcon sx={{ position: "relative", top: 3, fontSize: 24 }} style={{ color: red[500]}}/> sehr voll</span>
     }
     
     if(departure.cancelled && departure.cancelled == true) {

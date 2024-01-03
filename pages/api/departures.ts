@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import moment from 'moment';
 
 enum NoteKeys {
+    occup_jny_max_13 = "text.occup.jny.max.13",
     occup_jny_max_12 = "text.occup.jny.max.12",
     occup_jny_max_11 = "text.occup.jny.max.11",
     occup_jny_loc_12 = "text.occup.loc.max.12",
@@ -60,6 +61,8 @@ export default async function handler(
                 occupancy = "rather_empty";
             } else if(filteredOccup[0].key == NoteKeys.occup_jny_max_12) {
                 occupancy = "rather_full";
+            } else if(filteredOccup[0].key == NoteKeys.occup_jny_max_13) {
+                occupancy = "very_full";
             }
         }
 

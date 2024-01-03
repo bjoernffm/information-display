@@ -1,14 +1,28 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as os from "os";
 import { machineIdSync } from 'node-machine-id';
+
+interface NetworkAddress {
+    name: string
+    ip: string
+}
+
+interface ApiResponse {
+    id: string,
+    addresses: NetworkAddress[],
+    uptime: number,
+    os: {
+        type: string,
+        platform: string,
+        version: string,
+        release: string
+    }
+}
  
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<any>
+    res: NextApiResponse<ApiResponse>
 ) {
-
-    console.log();
-
     let dict = os.networkInterfaces();
     let keys = Object.keys(dict);
     let values = Object.values(dict);

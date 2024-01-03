@@ -19,37 +19,77 @@ import Skeleton from '@mui/material/Skeleton';
 import cuid from 'cuid';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDisplay } from '@fortawesome/free-solid-svg-icons'
+import { faDisplay, faQuestion } from '@fortawesome/free-solid-svg-icons'
 //import { faDisplay } from '@fortawesome/free-regular-svg-icons'
 import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons'
 
-interface Product {
-    "line": string;
-    "type": string;
+interface NetworkAddress {
+    name: string
+    ip: string
+}
+
+interface ApiResponse {
+    id: string,
+    addresses: NetworkAddress[],
+    uptime: number,
+    os: {
+        type: string,
+        platform: string,
+        version: string,
+        release: string
+    }
+}
+
+const defaultData: ApiResponse = {
+    id: "",
+    addresses: [],
+    uptime: 0,
+    os: {
+        type: "",
+        platform: "",
+        version: "",
+        release: ""
+    }
+}
+
+interface OsIconProps {
+    os: string
+}
+
+export function OsIcon({os}: OsIconProps) {
+    if(os === "Windows_NT") {
+        return <FontAwesomeIcon icon={faWindows} />;
+    } else if(os === "Darwin") {
+        return <FontAwesomeIcon icon={faApple} />;
+    } else if(os === "Linux") {
+        return <FontAwesomeIcon icon={faLinux} />;
+    } else {
+        return <FontAwesomeIcon icon={faQuestion} />;
+    }
 }
 
 export default function DeviceCard() {
-    const [departures, setDepartures] = useState([]);
+    const [data, setData] = useState(defaultData);
     const [loading, setLoading] = useState(true);
 
-    /*useEffect(() => {
-        fetch('/api/departures')
+    useEffect(() => {
+        fetch('/api/device')
             .then((response) => response.json())
-            .then((json) => {
-                setDepartures(json);
+            .then((json: ApiResponse) => {
+                setData(json);
                 setLoading(false);
             })
 
         const interval = setInterval(() => {
-            fetch('/api/departures')
+            fetch('/api/device')
                 .then((response) => response.json())
-                .then((json) => {
-                    setDepartures(json);
+                .then((json: ApiResponse) => {
+                    setData(json);
                 })
-        }, 60*1000);
+        }, 30*1000);
 
         return () => clearInterval(interval);        
-    }, []);*/
+    }, []);
 
     return (
         <Card>
@@ -58,30 +98,24 @@ export default function DeviceCard() {
                     <Grid item xs={6}>
                         <Typography variant="h4">Machine</Typography>
                         <p>
-                            Id: <code>33700bf8-2bd8-4c38-95ac-b941ac34e86e</code><br />
-                            Uptime: 3304.906
+                            Id: <code>{data.id}</code><br />
+                            Uptime: {moment(moment().unix()*1000-data.uptime*1000).fromNow()}
                         </p>
                         <Typography variant="h4">OS</Typography>
-                        <p><FontAwesomeIcon icon={faWindows} /> Windows 10 Home</p>
+                        <p><OsIcon os={data.os.type} /> {data.os.version}</p>
                         <small>
-                            Platform: win32<br />
-                            Release: 10.0.19045
+                            Platform: {data.os.platform}<br />
+                            Release: {data.os.release}
                         </small>
                     </Grid>
                     <Grid item xs={6}>
                         <Typography variant="h4">Network</Typography>
-                        <p>
-                            Name: VirtualBox Host-Only Network<br />
-                            IP: <code>192.168.56.1</code>
-                        </p>
-                        <p>
-                            Name: WLAN<br />
-                            IP: <code>192.168.178.84</code>
-                        </p>
-                        <p>
-                            Name: Loopback Pseudo-Interface 1<br />
-                            IP: <code>127.0.0.1</code>
-                        </p>
+                        {data.addresses.map(address => (
+                            <p>
+                                Name: {address.name}<br />
+                                IP: <code>{address.ip}</code>
+                            </p>
+                        ))}
                     </Grid>
                 </Grid>
             </CardContent>

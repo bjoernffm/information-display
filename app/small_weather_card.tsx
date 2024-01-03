@@ -5,7 +5,7 @@ import './weather_icons/css/weather-icons.min.css';
 import './weather_icons/css/weather-icons-wind.min.css';
 import Grid from '@mui/material/Grid';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, BarOptions, AnimationOptions, BarControllerChartOptions, ScaleChartOptions } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, BarOptions, AnimationOptions, BarControllerChartOptions, ScaleChartOptions, Tick } from 'chart.js';
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 import moment from 'moment';
 import 'moment/locale/de';
@@ -102,7 +102,7 @@ const defaultCurrentWeatherData: CurrentWeatherData = {
     "icon": "cloudy"
   }
 
-  interface WeatherAlert     {
+  interface WeatherAlert {
     alert_id: string,
     /*"id": 279977,
     "effective": "2023-08-06T17:58:00+00:00",
@@ -140,8 +140,9 @@ const defaultOptions: ScaleChartOptions<"bar"> = {
     y: {
       ticks: {
         // Include a dollar sign in the ticks
-        callback: function(value, index, ticks) {
-            return value+'°';
+        callback: (tickValue: number | string, index: number, ticks: Tick[]) => {
+        //callback: function(value, index, ticks) {
+            return tickValue+'°';
         }
       },
       min: 10,
@@ -158,6 +159,63 @@ function FormattedValue(props: FormattedValueProps) {
     return <span>{new Intl.NumberFormat("de-DE").format(Math.round(props.value))}</span>;
   }
   return <span>-</span>;
+}
+
+interface WeatherIconProps {
+  icon: string|null;
+}
+
+
+
+
+
+
+
+
+
+export function WeatherIcon({icon}: WeatherIconProps) {
+  let wi_icon = "wi-na";
+
+  switch(icon) {
+    case "clear-day":
+      wi_icon = "wi-day-sunny";
+      break;
+    case "clear-night":
+      wi_icon = "wi-night-clear";
+      break;
+    case "partly-cloudy-day":
+      wi_icon = "wi-day-cloudy";
+      break;
+    case "partly-cloudy-night":
+      wi_icon = "wi-night-alt-cloudy";
+      break;
+    case "cloudy":
+      wi_icon = "wi-cloudy";
+      break;
+    case "fog":
+      wi_icon = "wi-fog";
+      break;
+    case "wind":
+      wi_icon = "wi-strong-wind";
+      break;
+    case "rain":
+      wi_icon = "wi-rain";
+      break;
+    case "sleet":
+      wi_icon = "wi-sleet";
+      break;
+    case "snow":
+      wi_icon = "wi-snow";
+      break;
+    case "hail":
+      wi_icon = "wi-hail";
+      break;
+    case "thunderstorm":
+      wi_icon = "aaaaaaa";
+      break;
+  }
+
+  return <i className={"wi "+wi_icon} style={{position: 'relative', top: 0, fontSize: "50pt"}}></i>;
 }
 
 export default function SmallWeatherCard() {
@@ -246,7 +304,7 @@ useEffect(() => {
         <Grid container spacing={2}>
           <Grid item xs={5}>
             <Typography variant="h2" align='center' component="div">
-              <i className="wi wi-day-cloudy" style={{position: 'relative', top: 0, fontSize: "50pt"}}></i> {Math.round(currentWeather.temperature)}<i className="wi wi-celsius"></i>
+              <WeatherIcon icon={currentWeather.icon} /> {Math.round(currentWeather.temperature)}<i className="wi wi-celsius"></i>
             </Typography>
             <Grid container spacing={4}>
               <Grid item xs={4}>

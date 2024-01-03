@@ -12,7 +12,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
-import moment from 'moment';
+import moment, { RelativeTimeKey } from 'moment';
 import 'moment/locale/de';
 import { purple, blue, green, red, orange, grey } from '@mui/material/colors';
 import Skeleton from '@mui/material/Skeleton';
@@ -35,8 +35,27 @@ interface Departure {
     occupancy: string|null;
 }
 
-function processRelativeTime(number: number, withoutSuffix: boolean, key: string, isFuture: boolean) {
-    var format = {
+type FormatOptions = "m"|"h"|"d"|"dd"|"w"|"M"|"MM"|"y"|"yy";
+
+interface FormatInterface {
+    s?: string[]
+    ss?: string[]
+    m: string[]
+    mm?: string[]
+    h: string[]
+    hh?: string[]
+    d: string[]
+    dd: string[]
+    w: string[]
+    ww?: string[]
+    M: string[]
+    MM: string[]
+    y: string[]
+    yy: string[]
+}
+
+function processRelativeTime(number: number, withoutSuffix: boolean, key: RelativeTimeKey, isFuture: boolean) {
+    let format: FormatInterface = {
         m: ['1 Min.', '1 Min.'],
         h: ['eine Stunde', 'einer Stunde'],
         d: ['ein Tag', 'einem Tag'],
@@ -47,7 +66,8 @@ function processRelativeTime(number: number, withoutSuffix: boolean, key: string
         y: ['ein Jahr', 'einem Jahr'],
         yy: [number + ' Jahre', number + ' Jahren'],
     };
-    return withoutSuffix ? format[key][0] : format[key][1];
+    
+    return withoutSuffix ? format[key]![0] : format[key]![1];
 }
 
 moment.updateLocale('de', {
@@ -71,11 +91,12 @@ moment.updateLocale('de', {
     },
 });
 
-moment.fn.fromNowOrNow = function (a) {
-    if (Math.abs(moment().diff(this)) < 45000) { // 1000 milliseconds
+let fromNowOrNow = function (momentInstance: moment.Moment) {
+    if (Math.abs(moment().diff(momentInstance)) < 45000) { // 1000 milliseconds
         return 'jetzt';
     }
-    return this.fromNow(a);
+
+    return momentInstance.fromNow();
 }
 
 interface DepatureTableProps {
@@ -109,13 +130,17 @@ export function DepartureTable({departures, directionFlag, maxEntries=4, loading
         }
 
         setLocalDepartures(tmpDepartures);
-    });
+    }, [departures, loading, maxEntries, directionFlag]);
     
     return (<TableContainer>
         <Table aria-label="simple table">
             <TableBody>
             {localDepartures.map((row: Departure|null) => {
-                return (<DepartureRow departure={row} />);
+                if(row === null) {
+                    return (<DepartureRow departure={null} key={cuid()} />);
+                } else {
+                    return (<DepartureRow departure={row} key={row.id} />);
+                }
             })}
             </TableBody>
         </Table>
@@ -127,19 +152,8 @@ interface DepartureRowProps {
 }
 
 export function DepartureRow({departure}: DepartureRowProps) {
-    const [uniqueKey, setUniqueKey] = useState("");
-
-    useEffect(() => {
-        if(departure == null) {
-            setUniqueKey(cuid());
-        } else {
-            setUniqueKey(departure.id);
-        }
-    });
-
     if(departure == null) {
         return (<TableRow
-                key={uniqueKey}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                 <TableCell style={{width: '50px', padding: '2px'}}>
@@ -161,7 +175,7 @@ export function DepartureRow({departure}: DepartureRowProps) {
                 </TableRow>)
     }
 
-    let remainingTime = moment(departure.time*1000).fromNowOrNow()
+    let remainingTime = fromNowOrNow(moment(departure.time*1000))
     let departureTime = moment(departure.time*1000).format('HH:mm'); 
     
     let departureInfo = <span>{departureTime}</span>;
@@ -183,7 +197,7 @@ export function DepartureRow({departure}: DepartureRowProps) {
     }
 
     return (<TableRow
-        key={uniqueKey}
+        key={departure.id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
         <TableCell style={{width: '50px', padding: '2px'}}>

@@ -31,7 +31,7 @@ interface Departure {
  
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Departure[]>
+    res: NextApiResponse<any>
 ) {
     const response = await fetch('https://www.rmv.de/hapi/departureBoard?accessId='+encodeURIComponent(process.env.RMV_API_TOKEN as string)+'&id='+encodeURIComponent(process.env.RMV_STOP_ID as string)+'&format=json');
     const json = await response.json();
@@ -69,7 +69,7 @@ export default async function handler(
         return {
             id: departure.JourneyDetailRef.ref as string,
             product: {
-                line: departure.ProductAtStop.name as string,
+                line: departure.ProductAtStop.line as string,
                 type: departure.ProductAtStop.catOut as string,
             },
             time,
